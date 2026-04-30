@@ -1,90 +1,1032 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retro Dance Floor</title>
-<style>
-  body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#0a0a0a;
-    color:#fff;
-    text-align:center;
-  }
-  h1 { color:#ff66cc; }
-  #game {
-    display:grid;
-    grid-template-columns: repeat(6, 60px);
-    gap:6px;
-    justify-content:center;
-    margin-top:20px;
-  }
-  .tile {
-    width:60px;
-    height:60px;
-    background:#111;
-    border:2px solid #222;
-  }
-  .lit { background:#ffcc00; }
-  .player { background:#00ccff; }
-  #jukebox button {
-    margin:5px;
-    padding:10px;
-    background:#222;
-    color:#fff;
-    border:1px solid #ff66cc;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saturday Night Fever Floor</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@400;700;900&display=swap');
+
+    :root {
+      --bg-1: #05060f;
+      --bg-2: #1a1433;
+      --neon-cyan: #2df4ff;
+      --neon-pink: #ff4fa3;
+      --neon-gold: #ffcf4a;
+      --panel: rgba(11, 12, 24, 0.82);
+      --ink: #eaf2ff;
+      --danger: #ff5d5d;
+      --ok: #58ffa4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: 'Orbitron', 'Trebuchet MS', sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, #2446d6 0%, transparent 28%),
+        radial-gradient(circle at 85% 20%, #d6439b 0%, transparent 24%),
+        linear-gradient(145deg, var(--bg-1), var(--bg-2));
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 2px solid rgba(45, 244, 255, 0.32);
+      border-radius: 14px;
+      box-shadow: 0 0 26px rgba(45, 244, 255, 0.18), inset 0 0 18px rgba(255, 79, 163, 0.18);
+      backdrop-filter: blur(6px);
+    }
+
+    .left {
+      padding: 18px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-family: 'Monoton', cursive;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      color: var(--neon-gold);
+      text-shadow: 0 0 12px rgba(255, 207, 74, 0.7);
+      font-size: clamp(30px, 4vw, 42px);
+    }
+
+    .tagline {
+      margin: 0 0 16px;
+      color: #c9d8ff;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      border: 1px solid rgba(255, 207, 74, 0.4);
+      border-radius: 10px;
+      background: rgba(17, 20, 40, 0.78);
+      padding: 10px;
+    }
+
+    .label {
+      color: #99a9d9;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px rgba(45, 244, 255, 0.55);
+    }
+
+    .timer-card .value {
+      font-size: clamp(30px, 5vw, 42px);
+      color: var(--neon-gold);
+      text-shadow: 0 0 12px rgba(255, 207, 74, 0.72);
+      line-height: 1;
+    }
+
+    .timer-danger {
+      color: var(--danger) !important;
+      text-shadow: 0 0 12px rgba(255, 93, 93, 0.9);
+      animation: timerWarn 0.7s ease-in-out infinite;
+    }
+
+    .status {
+      min-height: 52px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 79, 163, 0.45);
+      padding: 14px;
+      margin-bottom: 14px;
+      background: rgba(29, 16, 36, 0.64);
+      line-height: 1.5;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: inset 0 0 18px rgba(255, 79, 163, 0.16);
+    }
+
+    .good {
+      color: var(--ok);
+      border-color: rgba(88, 255, 164, 0.7);
+      box-shadow: 0 0 18px rgba(88, 255, 164, 0.28), inset 0 0 18px rgba(88, 255, 164, 0.12);
+    }
+
+    .bad {
+      color: var(--danger);
+      border-color: rgba(255, 93, 93, 0.7);
+      box-shadow: 0 0 18px rgba(255, 93, 93, 0.28), inset 0 0 18px rgba(255, 93, 93, 0.12);
+    }
+
+    .needs-music {
+      color: var(--neon-gold);
+      border-color: rgba(255, 207, 74, 0.7);
+      box-shadow: 0 0 18px rgba(255, 207, 74, 0.24), inset 0 0 18px rgba(255, 207, 74, 0.12);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .controls button,
+    .jukebox button,
+    .mobile-pad button {
+      font-family: inherit;
+      border: 1px solid;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .controls button:hover,
+    .jukebox button:hover,
+    .mobile-pad button:hover {
+      transform: translateY(-1px);
+    }
+
+    #startRound {
+      border-color: rgba(255, 207, 74, 0.7);
+      background: linear-gradient(120deg, #8f4a00, #c7740f);
+      box-shadow: 0 0 16px rgba(255, 207, 74, 0.38);
+    }
+
+    #quitGame {
+      border-color: rgba(255, 93, 93, 0.7);
+      background: linear-gradient(120deg, #5b1010, #a61d1d);
+      box-shadow: 0 0 16px rgba(255, 93, 93, 0.28);
+    }
+
+    #startRound:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+      filter: grayscale(0.2);
+    }
+
+    .jukebox {
+      border-top: 1px solid rgba(153, 169, 217, 0.35);
+      padding-top: 12px;
+    }
+
+    .jukebox-title {
+      margin: 0 0 8px;
+      color: var(--neon-pink);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .jukebox {
+      display: grid;
+      gap: 8px;
+    }
+
+    .jukebox button {
+      border-color: rgba(255, 79, 163, 0.6);
+      background: linear-gradient(120deg, #4f1d3e, #90245c);
+      text-align: left;
+    }
+
+    .jukebox button.active-track {
+      border-color: rgba(45, 244, 255, 0.85);
+      box-shadow: 0 0 18px rgba(45, 244, 255, 0.38);
+      background: linear-gradient(120deg, #17435a, #1f7a88);
+    }
+
+    .music-controls {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .music-controls button {
+      border-color: rgba(45, 244, 255, 0.62);
+      background: linear-gradient(120deg, #0f4f61, #117f8e);
+    }
+
+    .music-controls input {
+      width: 100%;
+    }
+
+    #musicStatus {
+      margin: 2px 0 0;
+      min-height: 18px;
+      color: #cce9ff;
+      font-size: 12px;
+    }
+
+    .right {
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.02) 0,
+        rgba(255, 255, 255, 0.02) 10px,
+        rgba(0, 0, 0, 0) 10px,
+        rgba(0, 0, 0, 0) 20px
+      );
+      pointer-events: none;
+    }
+
+    .arena-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .arena-title {
+      margin: 0;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px rgba(45, 244, 255, 0.55);
+      font-size: clamp(16px, 2.4vw, 22px);
+    }
+
+    .legend {
+      font-size: 12px;
+      color: #b6c8ff;
+    }
+
+    .dance-floor {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(30px, 1fr));
+      gap: 6px;
+      width: min(100%, 620px);
+      margin: 0 auto;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(1, 4, 14, 0.78);
+      border: 1px solid rgba(45, 244, 255, 0.34);
+    }
+
+    .tile {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: linear-gradient(135deg, #0c1230, #1a1e47);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.08);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      user-select: none;
+    }
+
+    .tile.target {
+      background: linear-gradient(135deg, #664100, #ff9f1a);
+      box-shadow: 0 0 12px rgba(255, 207, 74, 0.7), inset 0 0 12px rgba(255, 255, 255, 0.22);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .tile.player {
+      background: linear-gradient(135deg, #125971, #2df4ff);
+      box-shadow: 0 0 14px rgba(45, 244, 255, 0.85), inset 0 0 14px rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.5);
+      padding: 3px;
+    }
+
+    .dancer-icon {
+      width: 100%;
+      height: 100%;
+      stroke: #ffffff;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+    }
+
+    .tile.player .dancer-icon circle {
+      fill: #ffffff;
+    }
+
+    .tile.hit {
+      background: linear-gradient(135deg, #1f2238, #2e3046);
+      opacity: 0.65;
+    }
+
+    .mobile-pad {
+      margin: 14px auto 0;
+      width: min(220px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mobile-pad button {
+      border-color: rgba(45, 244, 255, 0.6);
+      background: linear-gradient(120deg, #1b355a, #274c73);
+      min-height: 42px;
+    }
+
+    .mobile-pad .blank {
+      visibility: hidden;
+    }
+
+    .countdown-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      font-family: 'Monoton', cursive;
+      font-size: clamp(54px, 14vw, 120px);
+      letter-spacing: 4px;
+      color: #ffffff;
+      text-shadow: 0 0 24px rgba(255, 79, 163, 0.92), 0 0 40px rgba(45, 244, 255, 0.85);
+      background: radial-gradient(circle, rgba(18, 15, 35, 0.4), rgba(2, 3, 10, 0.86));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .countdown-overlay.show {
+      opacity: 1;
+    }
+
+    .result-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(4, 6, 18, 0.76);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .result-overlay.show {
+      opacity: 1;
+    }
+
+    .result-card {
+      min-width: min(420px, 90%);
+      text-align: center;
+      padding: 24px 22px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(13, 15, 32, 0.94);
+      box-shadow: 0 0 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .result-title {
+      margin: 0 0 8px;
+      font-family: 'Monoton', cursive;
+      font-size: clamp(28px, 5vw, 48px);
+      letter-spacing: 3px;
+    }
+
+    .result-message {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .result-card.win {
+      border-color: rgba(88, 255, 164, 0.72);
+      box-shadow: 0 0 30px rgba(88, 255, 164, 0.34);
+    }
+
+    .result-card.win .result-title {
+      color: var(--ok);
+      text-shadow: 0 0 16px rgba(88, 255, 164, 0.7);
+    }
+
+    .result-card.lose {
+      border-color: rgba(255, 93, 93, 0.72);
+      box-shadow: 0 0 30px rgba(255, 93, 93, 0.34);
+    }
+
+    .result-card.lose .result-title {
+      color: var(--danger);
+      text-shadow: 0 0 16px rgba(255, 93, 93, 0.7);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.92); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes timerWarn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 940px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .left,
+      .right {
+        width: min(760px, 100%);
+        margin: 0 auto;
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>Saturday Night Dance Floor</h1>
-<div id="jukebox">
-  <button onclick="playTrack(0)">Track 1</button>
-  <button onclick="playTrack(1)">Track 2</button>
-</div>
-<div id="game"></div>
-<p id="status"></p><audio id="tracks">
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
-</audio><script>
-const gridSize = 6;
-const game = document.getElementById('game');
-let player = 0;
-let target = Math.floor(Math.random()*36);
+  <main class="app">
+    <section class="panel left">
+      <h1>Saturday Night Fever Floor</h1>
+      <p class="tagline">
+        Retro 1980s dance challenge starring John T. style disco moves.<br>
+        Use arrow keys and cover every lit dance-step square before the timer expires.
+      </p>
 
-function draw(){
-  game.innerHTML='';
-  for(let i=0;i<gridSize*gridSize;i++){
-    const tile = document.createElement('div');
-    tile.className='tile';
-    if(i===player) tile.classList.add('player');
-    if(i===target) tile.classList.add('lit');
-    game.appendChild(tile);
-  }
-}
+      <div class="stats">
+        <div class="card">
+          <div class="label">Round</div>
+          <div class="value" id="roundValue">1</div>
+        </div>
+        <div class="card timer-card">
+          <div class="label">Timer</div>
+          <div class="value" id="timerValue">20s</div>
+        </div>
+        <div class="card">
+          <div class="label">Dance Steps Left</div>
+          <div class="value" id="targetsValue">0</div>
+        </div>
+        <div class="card">
+          <div class="label">Score</div>
+          <div class="value" id="scoreValue">0</div>
+        </div>
+      </div>
 
-function check(){
-  if(player===target){
-    document.getElementById('status').innerText='Success! New move...';
-    target=Math.floor(Math.random()*36);
-  }
-}
+      <div class="status" id="gameStatus">
+        Pick a jukebox track to unlock the round, then dance across every lit box.
+      </div>
 
-window.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight' && player%gridSize<gridSize-1) player++;
-  if(e.key==='ArrowLeft' && player%gridSize>0) player--;
-  if(e.key==='ArrowDown' && player+gridSize<36) player+=gridSize;
-  if(e.key==='ArrowUp' && player-gridSize>=0) player-=gridSize;
-  check();
-  draw();
-});
+      <div class="controls">
+        <button id="startRound" disabled>Pick Music First</button>
+        <button id="quitGame">Quit</button>
+      </div>
 
-function playTrack(i){
-  const audio=document.getElementById('tracks');
-  audio.currentTime=0;
-  audio.play();
-}
+      <div class="jukebox">
+        <p class="jukebox-title">Jukebox</p>
+        <button data-track="0">Night Glide</button>
+        <button data-track="1">Disco Spark</button>
+        <button data-track="2">Mirrorball Sprint</button>
 
-draw();
-</script></body>
+        <div class="music-controls">
+          <button id="togglePlayback">Play</button>
+          <label for="volumeControl">Volume</label>
+          <input id="volumeControl" type="range" min="0" max="1" step="0.05" value="0.7">
+          <p id="musicStatus">No track loaded.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel right">
+      <div class="arena-header">
+        <h2 class="arena-title">Light-Up Dance Floor</h2>
+        <div class="legend">Player = Dancer icon | Glowing tile = dance step</div>
+      </div>
+
+      <div id="danceFloor" class="dance-floor" aria-label="Dance floor"></div>
+      <div id="resultOverlay" class="result-overlay" aria-live="polite">
+        <div id="resultCard" class="result-card">
+          <h3 id="resultTitle" class="result-title"></h3>
+          <p id="resultMessage" class="result-message"></p>
+        </div>
+      </div>
+      <div id="countdownOverlay" class="countdown-overlay" aria-live="polite">3</div>
+
+      <div class="mobile-pad" aria-label="Mobile controls">
+        <button class="blank" tabindex="-1">.</button>
+        <button data-dir="up">UP</button>
+        <button class="blank" tabindex="-1">.</button>
+        <button data-dir="left">LEFT</button>
+        <button data-dir="down">DOWN</button>
+        <button data-dir="right">RIGHT</button>
+      </div>
+    </section>
+  </main>
+
+  <audio id="tracks" preload="none"></audio>
+
+  <script>
+    const gridSize = 8;
+    const tileCount = gridSize * gridSize;
+    const baseTime = 16;
+    const minRoundTime = 7;
+    const dancerIconMarkup = `
+      <svg class="dancer-icon" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
+        <circle cx="18" cy="7" r="4"></circle>
+        <path d="M18 12 L18 22"></path>
+        <path d="M18 14 L10 18"></path>
+        <path d="M18 14 L27 10"></path>
+        <path d="M18 22 L10 30"></path>
+        <path d="M18 22 L26 29"></path>
+      </svg>
+    `;
+
+    const trackList = [
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+    ];
+
+    const danceFloor = document.getElementById('danceFloor');
+    const resultOverlay = document.getElementById('resultOverlay');
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMessage = document.getElementById('resultMessage');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const roundValue = document.getElementById('roundValue');
+    const timerValue = document.getElementById('timerValue');
+    const targetsValue = document.getElementById('targetsValue');
+    const scoreValue = document.getElementById('scoreValue');
+    const gameStatus = document.getElementById('gameStatus');
+    const startRoundButton = document.getElementById('startRound');
+    const quitGameButton = document.getElementById('quitGame');
+    const trackButtons = Array.from(document.querySelectorAll('[data-track]'));
+    const mobileButtons = Array.from(document.querySelectorAll('.mobile-pad [data-dir]'));
+
+    const audio = document.getElementById('tracks');
+    const togglePlaybackButton = document.getElementById('togglePlayback');
+    const volumeControl = document.getElementById('volumeControl');
+    const musicStatus = document.getElementById('musicStatus');
+
+    let player = tileCount - Math.ceil(gridSize / 2);
+    let litTargets = new Set();
+    let hitTargets = new Set();
+    let round = 1;
+    let score = 0;
+    let timer = baseTime;
+    let timerId = null;
+    let gameActive = false;
+    let countdownActive = false;
+    let currentTrack = null;
+    let sfxContext = null;
+    let roundToken = 0;
+
+    function randomTile(excluded) {
+      let candidate = Math.floor(Math.random() * tileCount);
+      while (excluded.has(candidate)) {
+        candidate = Math.floor(Math.random() * tileCount);
+      }
+      return candidate;
+    }
+
+    async function setupRound() {
+      if (countdownActive) {
+        return;
+      }
+
+      const targetsForRound = Math.min(6 + ((round - 1) * 2), 16);
+      if (currentTrack === null) {
+        setGameStatus('Select a jukebox track before starting the level.', 'needs-music');
+        musicStatus.textContent = 'Choose a song to unlock the dance floor.';
+        return;
+      }
+
+      hideResultOverlay();
+      roundToken += 1;
+      const currentRoundToken = roundToken;
+      const roundTimeLimit = Math.max(minRoundTime, baseTime - ((round - 1) * 2));
+      const used = new Set([player]);
+      litTargets = new Set();
+      hitTargets = new Set();
+
+      for (let i = 0; i < targetsForRound; i += 1) {
+        const tile = randomTile(used);
+        used.add(tile);
+        litTargets.add(tile);
+      }
+
+      timer = roundTimeLimit;
+      gameActive = false;
+      startRoundButton.disabled = true;
+      startRoundButton.textContent = 'Get Ready...';
+      updateHud();
+      drawFloor();
+
+      const countdownCompleted = await runCountdown(currentRoundToken);
+      if (!countdownCompleted) {
+        return;
+      }
+
+      gameActive = true;
+      startRoundButton.disabled = false;
+      startRoundButton.textContent = 'Restart Round';
+      setGameStatus(`Round live. Cover ${targetsForRound} dance-step squares in ${roundTimeLimit} seconds.`, '');
+      startTimer();
+    }
+
+    function wait(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    async function runCountdown(token) {
+      const countdownSteps = ['3', '2', '1', 'DANCE!'];
+      countdownActive = true;
+      countdownOverlay.classList.add('show');
+
+      for (let i = 0; i < countdownSteps.length; i += 1) {
+        if (token !== roundToken) {
+          countdownOverlay.classList.remove('show');
+          countdownActive = false;
+          return false;
+        }
+        countdownOverlay.textContent = countdownSteps[i];
+        await wait(i === countdownSteps.length - 1 ? 650 : 850);
+      }
+
+      countdownOverlay.classList.remove('show');
+      countdownActive = false;
+      return token === roundToken;
+    }
+
+    function startTimer() {
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        timer -= 1;
+        updateHud();
+        if (timer <= 0) {
+          failRound();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerId);
+      timerId = null;
+    }
+
+    function updateHud() {
+      roundValue.textContent = String(round);
+      timerValue.textContent = `${timer}s`;
+      targetsValue.textContent = String(litTargets.size - hitTargets.size);
+      scoreValue.textContent = String(score);
+      timerValue.classList.toggle('timer-danger', gameActive && timer <= 5);
+    }
+
+    function setGameStatus(message, mode) {
+      gameStatus.classList.remove('good', 'bad', 'needs-music');
+      if (mode) {
+        gameStatus.classList.add(mode);
+      }
+      gameStatus.textContent = message;
+    }
+
+    function showResultOverlay(type, title, message) {
+      resultCard.classList.remove('win', 'lose');
+      resultCard.classList.add(type);
+      resultTitle.textContent = title;
+      resultMessage.textContent = message;
+      resultOverlay.classList.add('show');
+    }
+
+    function hideResultOverlay() {
+      resultOverlay.classList.remove('show');
+    }
+
+    function resetGame() {
+      roundToken += 1;
+      gameActive = false;
+      countdownActive = false;
+      stopTimer();
+      hideResultOverlay();
+      countdownOverlay.classList.remove('show');
+
+      player = tileCount - Math.ceil(gridSize / 2);
+      litTargets = new Set();
+      hitTargets = new Set();
+      round = 1;
+      score = 0;
+      timer = baseTime;
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.removeAttribute('src');
+      audio.load();
+      currentTrack = null;
+
+      trackButtons.forEach((button) => {
+        button.classList.remove('active-track');
+      });
+
+      togglePlaybackButton.textContent = 'Play';
+      musicStatus.textContent = 'No track loaded.';
+      startRoundButton.disabled = true;
+      startRoundButton.textContent = 'Pick Music First';
+      setGameStatus('Game reset. Pick a jukebox track to start a new level.', 'needs-music');
+      updateHud();
+      drawFloor();
+    }
+
+    function drawFloor() {
+      danceFloor.innerHTML = '';
+      for (let i = 0; i < tileCount; i += 1) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+
+        if (litTargets.has(i)) {
+          if (hitTargets.has(i)) {
+            tile.classList.add('hit');
+          } else {
+            tile.classList.add('target');
+          }
+        }
+
+        if (i === player) {
+          tile.classList.add('player');
+          tile.innerHTML = dancerIconMarkup;
+        }
+
+        danceFloor.appendChild(tile);
+      }
+    }
+
+    function movePlayer(direction) {
+      if (!gameActive) {
+        return;
+      }
+
+      const row = Math.floor(player / gridSize);
+      const col = player % gridSize;
+
+      if (direction === 'left' && col > 0) {
+        player -= 1;
+      }
+      if (direction === 'right' && col < gridSize - 1) {
+        player += 1;
+      }
+      if (direction === 'up' && row > 0) {
+        player -= gridSize;
+      }
+      if (direction === 'down' && row < gridSize - 1) {
+        player += gridSize;
+      }
+
+      checkTile();
+      drawFloor();
+    }
+
+    function checkTile() {
+      if (!litTargets.has(player) || hitTargets.has(player)) {
+        return;
+      }
+
+      hitTargets.add(player);
+      score += 100;
+      updateHud();
+
+      if (hitTargets.size === litTargets.size) {
+        winRound();
+      }
+    }
+
+    function winRound() {
+      gameActive = false;
+      stopTimer();
+      playWinSfx();
+      setGameStatus('You win. Workout passed and next round unlocked.', 'good');
+      showResultOverlay('win', 'YOU WIN', 'Dance floor cleared. The next level gets faster.');
+      round += 1;
+      startRoundButton.textContent = 'Start Next Round';
+      startRoundButton.disabled = false;
+      updateHud();
+    }
+
+    function failRound() {
+      gameActive = false;
+      stopTimer();
+      playLoseSfx();
+      setGameStatus('You lose. Time is up. Try again and hit every lit square.', 'bad');
+      showResultOverlay('lose', 'YOU LOSE', 'Time ran out. Retry the level and move faster.');
+      startRoundButton.textContent = 'Try Again';
+      startRoundButton.disabled = false;
+      drawFloor();
+    }
+
+    function getSfxContext() {
+      if (!sfxContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) {
+          return null;
+        }
+        sfxContext = new AudioCtx();
+      }
+
+      if (sfxContext.state === 'suspended') {
+        sfxContext.resume();
+      }
+
+      return sfxContext;
+    }
+
+    function playTone(ctx, frequency, startOffset, duration, type, gainValue) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const startTime = ctx.currentTime + startOffset;
+      const stopTime = startTime + duration;
+
+      osc.type = type;
+      osc.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(gainValue, startTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, stopTime);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(stopTime + 0.02);
+    }
+
+    function playWinSfx() {
+      const ctx = getSfxContext();
+      if (!ctx) {
+        return;
+      }
+
+      playTone(ctx, 523.25, 0.00, 0.16, 'triangle', 0.12);
+      playTone(ctx, 659.25, 0.12, 0.16, 'triangle', 0.12);
+      playTone(ctx, 783.99, 0.24, 0.24, 'triangle', 0.14);
+    }
+
+    function playLoseSfx() {
+      const ctx = getSfxContext();
+      if (!ctx) {
+        return;
+      }
+
+      playTone(ctx, 330.00, 0.00, 0.2, 'sawtooth', 0.1);
+      playTone(ctx, 247.00, 0.16, 0.22, 'sawtooth', 0.1);
+      playTone(ctx, 196.00, 0.32, 0.3, 'sawtooth', 0.12);
+    }
+
+    async function playTrack(index) {
+      const selectedTrack = trackList[index];
+      if (!selectedTrack) {
+        musicStatus.textContent = 'Track not found.';
+        return;
+      }
+
+      currentTrack = index;
+      trackButtons.forEach((button) => {
+        button.classList.toggle('active-track', Number(button.dataset.track) === index);
+      });
+      if (!countdownActive && !gameActive) {
+        startRoundButton.disabled = false;
+        startRoundButton.textContent = round > 1 ? 'Start Next Round' : 'Start Round';
+      }
+      musicStatus.textContent = `Loading ${trackButtons[index].textContent}...`;
+
+      if (audio.src !== selectedTrack) {
+        audio.src = selectedTrack;
+        audio.load();
+      }
+
+      audio.currentTime = 0;
+
+      try {
+        await audio.play();
+        togglePlaybackButton.textContent = 'Pause';
+        musicStatus.textContent = `Now playing ${trackButtons[index].textContent}`;
+        if (!countdownActive && !gameActive) {
+          setGameStatus('Track loaded. Start the level and cover every lit box before time runs out.', '');
+        }
+      } catch (error) {
+        togglePlaybackButton.textContent = 'Play';
+        musicStatus.textContent = 'Playback blocked. Tap track again.';
+      }
+    }
+
+    function togglePlayback() {
+      if (currentTrack === null) {
+        musicStatus.textContent = 'Pick a jukebox song first.';
+        return;
+      }
+
+      if (audio.paused) {
+        audio.play()
+          .then(() => {
+            togglePlaybackButton.textContent = 'Pause';
+            musicStatus.textContent = `Now playing ${trackButtons[currentTrack].textContent}`;
+          })
+          .catch(() => {
+            musicStatus.textContent = 'Could not resume playback.';
+          });
+      } else {
+        audio.pause();
+        togglePlaybackButton.textContent = 'Play';
+        musicStatus.textContent = `Paused ${trackButtons[currentTrack].textContent}`;
+      }
+    }
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+      }
+
+      if (event.key === 'ArrowLeft') {
+        movePlayer('left');
+      }
+      if (event.key === 'ArrowRight') {
+        movePlayer('right');
+      }
+      if (event.key === 'ArrowUp') {
+        movePlayer('up');
+      }
+      if (event.key === 'ArrowDown') {
+        movePlayer('down');
+      }
+    });
+
+    mobileButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        movePlayer(button.dataset.dir);
+      });
+    });
+
+    trackButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        playTrack(Number(button.dataset.track));
+      });
+    });
+
+    startRoundButton.addEventListener('click', setupRound);
+    quitGameButton.addEventListener('click', resetGame);
+    togglePlaybackButton.addEventListener('click', togglePlayback);
+
+    volumeControl.addEventListener('input', () => {
+      audio.volume = Number(volumeControl.value);
+    });
+
+    audio.addEventListener('waiting', () => {
+      if (currentTrack !== null) {
+        musicStatus.textContent = `Loading ${trackButtons[currentTrack].textContent}...`;
+      }
+    });
+
+    audio.addEventListener('playing', () => {
+      togglePlaybackButton.textContent = 'Pause';
+      if (currentTrack !== null) {
+        musicStatus.textContent = `Now playing ${trackButtons[currentTrack].textContent}`;
+      }
+    });
+
+    audio.addEventListener('ended', () => {
+      togglePlaybackButton.textContent = 'Play';
+      if (currentTrack !== null) {
+        musicStatus.textContent = `Finished ${trackButtons[currentTrack].textContent}`;
+      }
+    });
+
+    audio.volume = Number(volumeControl.value);
+    drawFloor();
+    updateHud();
+  </script>
+</body>
 </html>
