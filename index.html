@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Dance Floor</title>
+<style>
+  body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#0a0a0a;
+    color:#fff;
+    text-align:center;
+  }
+  h1 { color:#ff66cc; }
+  #game {
+    display:grid;
+    grid-template-columns: repeat(6, 60px);
+    gap:6px;
+    justify-content:center;
+    margin-top:20px;
+  }
+  .tile {
+    width:60px;
+    height:60px;
+    background:#111;
+    border:2px solid #222;
+  }
+  .lit { background:#ffcc00; }
+  .player { background:#00ccff; }
+  #jukebox button {
+    margin:5px;
+    padding:10px;
+    background:#222;
+    color:#fff;
+    border:1px solid #ff66cc;
+  }
+</style>
+</head>
+<body>
+<h1>Saturday Night Dance Floor</h1>
+<div id="jukebox">
+  <button onclick="playTrack(0)">Track 1</button>
+  <button onclick="playTrack(1)">Track 2</button>
+</div>
+<div id="game"></div>
+<p id="status"></p><audio id="tracks">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
+</audio><script>
+const gridSize = 6;
+const game = document.getElementById('game');
+let player = 0;
+let target = Math.floor(Math.random()*36);
+
+function draw(){
+  game.innerHTML='';
+  for(let i=0;i<gridSize*gridSize;i++){
+    const tile = document.createElement('div');
+    tile.className='tile';
+    if(i===player) tile.classList.add('player');
+    if(i===target) tile.classList.add('lit');
+    game.appendChild(tile);
+  }
+}
+
+function check(){
+  if(player===target){
+    document.getElementById('status').innerText='Success! New move...';
+    target=Math.floor(Math.random()*36);
+  }
+}
+
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight' && player%gridSize<gridSize-1) player++;
+  if(e.key==='ArrowLeft' && player%gridSize>0) player--;
+  if(e.key==='ArrowDown' && player+gridSize<36) player+=gridSize;
+  if(e.key==='ArrowUp' && player-gridSize>=0) player-=gridSize;
+  check();
+  draw();
+});
+
+function playTrack(i){
+  const audio=document.getElementById('tracks');
+  audio.currentTime=0;
+  audio.play();
+}
+
+draw();
+</script></body>
+</html>
